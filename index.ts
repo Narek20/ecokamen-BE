@@ -8,6 +8,7 @@ import BasketRouter from './src/api/Basket';
 import OrdersRouter from './src/api/Order';
 import PaymentRouter from './src/api/Payment';
 import EmailRouter from './src/api/Email';
+import HelloWorldRouter from './src/api/HelloWorld';
 import env from './src/utils/constants/env';
 
 const app = express();
@@ -36,6 +37,7 @@ app.use('/orders', OrdersRouter);
 app.use('/basket', BasketRouter);
 app.use('/payment', PaymentRouter);
 app.use('/email', EmailRouter);
+app.use('', HelloWorldRouter);
 
 app.listen(env.port || 8080, () => {
   console.log('Server running on port 8080');
