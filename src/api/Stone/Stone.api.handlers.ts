@@ -49,18 +49,32 @@ export const searchStonesByName = async (req: Request, res: Response) => {
   try {
     const { searchKey } = req.params;
 
-    const stones = await Stone.find(searchKey === "allStones" ? {} : {
-      $or: [
-        { searchName: { $regex: searchKey } },
-        { title: { $regex: searchKey } },
-      ],
-    })
-      .limit(10)
-      .lean();
+    const stones = await Stone.aggregate([
+      {
+        $match:
+          searchKey === 'allStones'
+            ? {}
+            : {
+                $or: [
+                  { searchName: { $regex: searchKey } },
+                  { title: { $regex: searchKey } },
+                ],
+              },
+      },
+      { $limit: 10 },
+      {
+        $group: {
+          _id: { title: '$title' },
+          title: { $addToSet: '$_id' },
+          count: { $sum: 1 },
+          docs: { $push: '$$ROOT' } 
+        },
+      },
+    ])
 
     const result = stones.map((stone) => ({
-      ...stone,
-      link: `${stone.searchCategory}/${stone.searchName}`,
+      ...stone.docs[0],
+      link: `${stone.docs[0].searchCategory}/${stone.docs[0].searchName}`,
     }));
 
     return res.send({
