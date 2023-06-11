@@ -5,6 +5,7 @@
     "esModuleInterop": true,
     "sourceMap": true,
     "strict": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "outDir": "./dict"
   }
 }
